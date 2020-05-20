@@ -1,0 +1,31 @@
+#!/bin/bash
+
+function remove_newline {
+	tr -d "\n"
+}
+
+# List all directories on separate lines
+function list_directories {
+	ls -d */ -1
+}
+
+function run_git_status_in_directory {
+	#echo `xargs -L 1 -I "{}" echo {}` # git -C {} symbolic-ref --short HEAD`
+	
+	#xargs -n 1 -I "{}" echo {}; git \-C {} symbolic-ref --short HEAD
+	while read a ; do
+		echo -n "$a	" 
+		if [ -d $a/.git ]
+		then
+			git \-C $a symbolic-ref --short HEAD 2>/dev/null | remove_newline 
+			echo -n "	"
+			git -C $a remote get-url --push origin 2>/dev/null | remove_newline
+			echo
+		else
+			echo '<not a repository>'
+		fi
+	done
+}
+
+echo =====================================
+list_directories | run_git_status_in_directory | expand -t 30,60

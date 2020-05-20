@@ -1,0 +1,24 @@
+#/!bin/bash
+
+function list_directories {
+	ls -d */ -1
+}
+
+function add_the_module_if_it_is_a_module {
+	while read a
+	do
+		echo testing $a ....................
+		
+		if [ -d $a/.git ]
+		then
+			echo trying to add $a
+			git_add_submodule $a
+		else
+			echo _____ $a _____ is not a git repository !!
+		fi
+	done
+	# git_add_submodule
+}
+
+list_directories | add_the_module_if_it_is_a_module
+# git_add_submodule
